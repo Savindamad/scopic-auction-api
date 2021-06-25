@@ -28,13 +28,31 @@ namespace auction_api.Services
             if (user.Password == password) {
                 var loginUser = new LoginUser();
                 loginUser.User = user;
-                loginUser.Token = generateJwtToken(user);
+                loginUser.Token = GenerateJwtToken(user);
                 return loginUser;
             }
             return null;
         }
 
-        public string generateJwtToken(UserInfo user)
+        public UserConfig GetUserConfig(int userId) {
+            var userConfig = _dbContext.UserConfigs.FirstOrDefault(x => x.UserId == userId);
+            return userConfig;
+        }
+
+        public UserConfig UpdateUserConfig(UserConfig config) {
+            try
+            {
+                _dbContext.Update(config);
+                _dbContext.SaveChanges();
+                return config;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public string GenerateJwtToken(UserInfo user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:secret"]);

@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace auction_api.Models
 {
-    public partial class AuctionDbContext : DbContext
+    public partial class auction_dbContext : DbContext
     {
-        public AuctionDbContext()
+        public auction_dbContext()
         {
         }
 
-        public AuctionDbContext(DbContextOptions<AuctionDbContext> options)
+        public auction_dbContext(DbContextOptions<auction_dbContext> options)
             : base(options)
         {
         }
@@ -25,7 +27,7 @@ namespace auction_api.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("");
+                optionsBuilder.UseSqlServer("Server=localhost; Database=auction_db; User ID=auction;Password=1234;");
             }
         }
 

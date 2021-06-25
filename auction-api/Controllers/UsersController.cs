@@ -24,5 +24,21 @@ namespace auction_api.Controllers
             }
             return BadRequest("Invalid Username or Password");
         }
+
+
+        [HttpGet]
+        [Route("config")]
+        public ActionResult<UserConfig> GetUserConfig([FromQuery] int userId)
+        {
+            var loginUser = _userService.GetUserConfig(userId);
+            return Ok(loginUser);
+        }
+
+        [HttpPut]
+        [Route("config")]
+        public ActionResult<UserConfig> UpdateUserConfig([FromBody] UserConfig config)
+        {
+            return Ok(_userService.UpdateUserConfig(config));
+        }
     }
 }

@@ -27,5 +27,40 @@ namespace auction_api.Controllers
         {
             return _itemService.GetItemsById(id);
         }
+
+        [HttpGet]
+        [Route("{id}/user-item")]
+        public ActionResult<UserItem> GetItemsUserConfig([FromQuery] int userId, [FromRoute] int id)
+        {
+            return _itemService.GetItemsUserConfig(userId, id);
+        }
+
+        [HttpPost]
+        [Route("user-item")]
+        public ActionResult<UserItem> AddItemsUserConfig([FromBody] UserItem userItem)
+        {
+            return Ok(_itemService.AddItemsUserConfig(userItem));
+        }
+
+        [HttpPut]
+        [Route("user-item")]
+        public ActionResult<UserItem> UpdateItemsUserConfig([FromBody] UserItem userItem)
+        {
+            return Ok(_itemService.UpdateItemsUserConfig(userItem));
+        }
+
+        [HttpGet]
+        [Route("{id}/max-bid")]
+        public ActionResult<ItemBid> GetMaxBidItem([FromRoute] int id)
+        {
+            return Ok(_itemService.GetMaxBidItem(id));
+        }
+
+        [HttpPost]
+        [Route("bid-item")]
+        public ActionResult<ItemBid> AddBidItem([FromBody] ItemBid userItem)
+        {
+            return Ok(_itemService.AddBidItem(userItem));
+        }
     }
 }

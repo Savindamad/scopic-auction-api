@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 #nullable disable
@@ -16,5 +17,7 @@ namespace auction_api.Models
         public string Role { get; set; }
         [JsonIgnore]
         public virtual ICollection<ItemBid> ItemBids { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<UserItem> UserItems { get; set; }
     }
 }

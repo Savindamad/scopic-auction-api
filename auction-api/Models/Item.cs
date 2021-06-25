@@ -15,5 +15,6 @@ namespace auction_api.Models
         public DateTime ClosingTime { get; set; }
 
         public virtual ICollection<ItemBid> ItemBids { get; set; }
+        public virtual ICollection<UserItem> UserItems { get; set; }
     }
 }
