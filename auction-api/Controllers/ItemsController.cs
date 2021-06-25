@@ -17,8 +17,8 @@ namespace auction_api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ItemResponse> GetItems([FromQuery] int pageNo, int pageSize) {
-            return _itemService.GetItems(pageNo, pageSize);
+        public ActionResult<ItemResponse> GetItems([FromQuery] int pageNo, int pageSize, string searchText) {
+            return _itemService.GetItems(pageNo, pageSize, searchText);
         }
 
         [HttpGet]
@@ -35,30 +35,23 @@ namespace auction_api.Controllers
             return _itemService.GetItemsUserConfig(userId, id);
         }
 
-        [HttpPost]
-        [Route("user-item")]
-        public ActionResult<UserItem> AddItemsUserConfig([FromBody] UserItem userItem)
-        {
-            return Ok(_itemService.AddItemsUserConfig(userItem));
-        }
-
         [HttpPut]
         [Route("user-item")]
-        public ActionResult<UserItem> UpdateItemsUserConfig([FromBody] UserItem userItem)
+        public ActionResult<UserItem> UpdateUserItem([FromBody] UserItem userItem)
         {
-            return Ok(_itemService.UpdateItemsUserConfig(userItem));
+            return Ok(_itemService.AddOrUpdateUserItem(userItem));
         }
 
         [HttpGet]
         [Route("{id}/max-bid")]
-        public ActionResult<ItemBid> GetMaxBidItem([FromRoute] int id)
+        public ActionResult<UserItemHistory> GetMaxBidItem([FromRoute] int id)
         {
             return Ok(_itemService.GetMaxBidItem(id));
         }
 
         [HttpPost]
         [Route("bid-item")]
-        public ActionResult<ItemBid> AddBidItem([FromBody] ItemBid userItem)
+        public ActionResult<UserItemHistory> AddBidItem([FromBody] UserItemHistory userItem)
         {
             return Ok(_itemService.AddBidItem(userItem));
         }

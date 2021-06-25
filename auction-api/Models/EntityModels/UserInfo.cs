@@ -16,7 +16,9 @@ namespace auction_api.Models
         public string Password { get; set; }
         public string Role { get; set; }
         [JsonIgnore]
-        public virtual ICollection<ItemBid> ItemBids { get; set; }
+        public virtual ICollection<UserConfig> UserConfigs { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<UserItemHistory> UserItemHistories { get; set; }
         [JsonIgnore]
         public virtual ICollection<UserItem> UserItems { get; set; }
     }

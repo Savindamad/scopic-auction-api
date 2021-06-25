@@ -16,17 +16,15 @@ namespace auction_api.Models
         }
 
         public virtual DbSet<Item> Items { get; set; }
-        public virtual DbSet<ItemBid> ItemBids { get; set; }
         public virtual DbSet<UserConfig> UserConfigs { get; set; }
         public virtual DbSet<UserInfo> UserInfos { get; set; }
         public virtual DbSet<UserItem> UserItems { get; set; }
+        public virtual DbSet<UserItemHistory> UserItemHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("");
-            }
+            { }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,6 +52,8 @@ namespace auction_api.Models
                     .IsUnicode(false)
                     .HasColumnName("image_url");
 
+                entity.Property(e => e.MaxBidUserItemId).HasColumnName("max_bid_user_item_id");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100)
@@ -62,47 +62,18 @@ namespace auction_api.Models
                 entity.Property(e => e.Price)
                     .HasColumnType("decimal(19, 2)")
                     .HasColumnName("price");
-            });
 
-            modelBuilder.Entity<ItemBid>(entity =>
-            {
-                entity.ToTable("item_bid");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.ItemId).HasColumnName("item_id");
-
-                entity.Property(e => e.Price)
-                    .HasColumnType("decimal(19, 2)")
-                    .HasColumnName("price");
-
-                entity.Property(e => e.Time)
-                    .HasColumnType("smalldatetime")
-                    .HasColumnName("time");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Item)
-                    .WithMany(p => p.ItemBids)
-                    .HasForeignKey(d => d.ItemId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__item_bid__item_i__47DBAE45");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.ItemBids)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__item_bid__user_i__48CFD27E");
+                entity.HasOne(d => d.MaxBidUserItem)
+                    .WithMany(p => p.Items)
+                    .HasForeignKey(d => d.MaxBidUserItemId)
+                    .HasConstraintName("FK__item__max_bid_us__73BA3083");
             });
 
             modelBuilder.Entity<UserConfig>(entity =>
             {
-                entity.HasKey(e => e.UserId)
-                    .HasName("PK__user_con__B9BE370FA55DFD4D");
-
                 entity.ToTable("user_config");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.BalanceBidPrice)
                     .HasColumnType("decimal(19, 0)")
@@ -111,6 +82,14 @@ namespace auction_api.Models
                 entity.Property(e => e.MaxBidPrice)
                     .HasColumnType("decimal(19, 0)")
                     .HasColumnName("max_bid_price");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserConfigs)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__user_conf__user___6754599E");
             });
 
             modelBuilder.Entity<UserInfo>(entity =>
@@ -158,19 +137,61 @@ namespace auction_api.Models
 
                 entity.Property(e => e.ItemId).HasColumnName("item_id");
 
+                entity.Property(e => e.MaxBidUserItemHistoryId).HasColumnName("max_bid_user_item_history_id");
+
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.Property(e => e.UserMaxBid)
+                    .HasColumnType("decimal(19, 0)")
+                    .HasColumnName("user_max_bid");
 
                 entity.HasOne(d => d.Item)
                     .WithMany(p => p.UserItems)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__user_item__item___619B8048");
+                    .HasConstraintName("FK__user_item__item___6FE99F9F");
+
+                entity.HasOne(d => d.MaxBidUserItemHistory)
+                    .WithMany(p => p.UserItems)
+                    .HasForeignKey(d => d.MaxBidUserItemHistoryId)
+                    .HasConstraintName("FK__user_item__max_b__71D1E811");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserItems)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__user_item__user___628FA481");
+                    .HasConstraintName("FK__user_item__user___70DDC3D8");
+            });
+
+            modelBuilder.Entity<UserItemHistory>(entity =>
+            {
+                entity.ToTable("user_item_history");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ItemId).HasColumnName("item_id");
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(19, 2)")
+                    .HasColumnName("price");
+
+                entity.Property(e => e.Time)
+                    .HasColumnType("smalldatetime")
+                    .HasColumnName("time");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.UserItemHistories)
+                    .HasForeignKey(d => d.ItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__item_bid__item_i__47DBAE45");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserItemHistories)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__item_bid__user_i__48CFD27E");
             });
 
             OnModelCreatingPartial(modelBuilder);

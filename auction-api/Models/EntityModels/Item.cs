@@ -13,8 +13,10 @@ namespace auction_api.Models
         public string ImageUrl { get; set; }
         public decimal Price { get; set; }
         public DateTime ClosingTime { get; set; }
+        public int? MaxBidUserItemId { get; set; }
 
-        public virtual ICollection<ItemBid> ItemBids { get; set; }
+        public virtual UserItem MaxBidUserItem { get; set; }
+        public virtual ICollection<UserItemHistory> UserItemHistories { get; set; }
         public virtual ICollection<UserItem> UserItems { get; set; }
     }
 }
